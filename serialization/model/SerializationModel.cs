@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using SerializationSystem.Logging;
 
 namespace SerializationSystem.Internal {
     internal class SerializationModel {
@@ -8,6 +9,10 @@ namespace SerializationSystem.Internal {
         internal readonly FieldInfo[] Fields;
 
         internal SerializationModel(Type type, SerializeMode serializeMode) {
+            if (type.IsInterface) {
+                Log.Warn($"Trying to build serialization model for interface type {type.FullName}", messageTitle: "SERIALIZE-WARN");
+                return;
+            }
             var ctor = type.Ctor();
             var parameters = SerializeUtils.CtorParameters(ctor);
             Constructor = new SerializationConstructor(ctor.Constructor, parameters);
@@ -27,10 +32,12 @@ namespace SerializationSystem.Internal {
                     throw new ArgumentOutOfRangeException(nameof(serializeMode), serializeMode, null);
             }
 
-            foreach (var field in Fields)
+            foreach (var field in Fields) {
+                if(field.FieldType.IsInterface) continue;   
                 if (!SerializeUtils.IsTriviallySerializable(field.FieldType) && !Serializer.HasSerializationModel(field.FieldType, serializeMode)) {
                     Serializer.BuildSerializationModel(field.FieldType, serializeMode);
                 }
+            }
         }
     }
 }
