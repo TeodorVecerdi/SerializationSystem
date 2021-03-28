@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SerializationSystem.Internal;
@@ -74,6 +74,12 @@ namespace SerializationSystem {
         }
 
         private static Packet SerializeImpl(object obj, Type type, Packet packet, SerializeMode serializeMode) {
+            if (type.IsInterface) {
+                var objType = obj.GetType();
+                if (LogOptions.LOG_SERIALIZATION) Log.Warn($"Interface type found {type.FullName}. Serializing using object type {objType.FullName}", null, "SERIALIZE");
+                return SerializeImpl(obj, objType, packet, serializeMode);
+            }
+            
             var typeId = type.ID();
             packet.WriteTypeId(typeId);
             packet.Write(serializeMode, SerializeMode.Default);
@@ -85,7 +91,7 @@ namespace SerializationSystem {
                 var value = field.GetValue(obj);
                 if (fieldType.IsInterface) {
                     var newType = value.GetType();
-                    Log.Error($"Replacing interface type {fieldType} with {newType}");
+                    if (LogOptions.LOG_SERIALIZATION) Log.Warn($"Interface type found {fieldType.FullName}. Serializing using object type {newType.FullName}", null, "SERIALIZE");
                     fieldType = newType;
                     packet.WriteTypeId(fieldType.ID());
                 }
@@ -145,7 +151,7 @@ namespace SerializationSystem {
                 var fieldType = field.FieldType;
                 if (fieldType.IsInterface) {
                     var newType = packet.ReadTypeId().Type;
-                    Log.Error($"Replacing interface type {fieldType} with {newType}");
+                    if (LogOptions.LOG_SERIALIZATION) Log.Warn($"Interface type found {fieldType.FullName}. Deserializing using object type {newType.FullName}", null, "SERIALIZE");
                     fieldType = newType;
                 }
                 var value = packet.Read(fieldType, serializeMode);
