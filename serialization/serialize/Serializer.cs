@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using SerializationSystem.Internal;
@@ -28,16 +28,6 @@ namespace SerializationSystem {
             isSerializationResultReplaced = false;
             var result = Serialize(obj, type, new Packet(), serializeMode);
             return isSerializationResultReplaced ? serializationReplacement : result;
-        }
-
-        [Obsolete("Use non-generic Deserialize instead. This method cannot handle deserialization result replacement when an exception occurs.")]
-        public static T Deserialize<T>(byte[] data) {
-            try {
-                return (T) Deserialize(data);
-            } catch (Exception exception) {
-                exceptionHandler.HandleDeserializationException(exception);
-            }
-            return default;
         }
 
         public static object Deserialize(byte[] data) {
