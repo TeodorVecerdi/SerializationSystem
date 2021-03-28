@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSystem", "..\SerializationSystem\SerializationSystem.csproj", "{F0180803-BD04-4AC8-AD5A-F20F7466450E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{1B964687-563F-464A-919A-7729E7BC1E96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -12,5 +14,9 @@ Global
 		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Debug|x86.Build.0 = Debug|x86
 		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Release|x86.ActiveCfg = Release|x86
 		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Release|x86.Build.0 = Release|x86
+		{1B964687-563F-464A-919A-7729E7BC1E96}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B964687-563F-464A-919A-7729E7BC1E96}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B964687-563F-464A-919A-7729E7BC1E96}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B964687-563F-464A-919A-7729E7BC1E96}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
