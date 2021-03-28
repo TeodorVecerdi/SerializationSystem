@@ -68,8 +68,5 @@
         <Compile Include="serialization\serialize\SerializeMode.cs" />
         <Compile Include="serialization\serialize\Serializer.cs" />
     </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="copy &quot;$(TargetPath)&quot; &quot;$(OutDir)..\..\..\networking_assignment4\Assets\shared\$(TargetFileName)&quot;" ContinueOnError="false" />
-    </Target>
     <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
