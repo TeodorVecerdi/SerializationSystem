@@ -13,7 +13,7 @@ namespace SerializationSystem {
             Arguments = new object[0];
         }
 
-        /// <summary>
+       /// <summary>
         /// Specifies which constructor should be used when creating an object instance while deserializing.
         /// Uses <paramref name="arguments"/> as arguments for the constructor. If a value from <paramref name="arguments"/> doesn't match,
         /// then a default parameter or default value will be used.
