@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSystem", "..\SerializationSystem\SerializationSystem.csproj", "{F0180803-BD04-4AC8-AD5A-F20F7466450E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerializationSystem", "SerializationSystem\SerializationSystem.csproj", "{961377F4-1FFB-4773-AD89-63ED00078990}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{1B964687-563F-464A-919A-7729E7BC1E96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{A1A916D5-8146-4784-91B7-1FC7D728A37E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Debug|x86.ActiveCfg = Debug|x86
-		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Debug|x86.Build.0 = Debug|x86
-		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Release|x86.ActiveCfg = Release|x86
-		{F0180803-BD04-4AC8-AD5A-F20F7466450E}.Release|x86.Build.0 = Release|x86
-		{1B964687-563F-464A-919A-7729E7BC1E96}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1B964687-563F-464A-919A-7729E7BC1E96}.Debug|x86.Build.0 = Debug|Any CPU
-		{1B964687-563F-464A-919A-7729E7BC1E96}.Release|x86.ActiveCfg = Release|Any CPU
-		{1B964687-563F-464A-919A-7729E7BC1E96}.Release|x86.Build.0 = Release|Any CPU
+		{961377F4-1FFB-4773-AD89-63ED00078990}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{961377F4-1FFB-4773-AD89-63ED00078990}.Debug|x86.Build.0 = Debug|Any CPU
+		{961377F4-1FFB-4773-AD89-63ED00078990}.Release|x86.ActiveCfg = Release|Any CPU
+		{961377F4-1FFB-4773-AD89-63ED00078990}.Release|x86.Build.0 = Release|Any CPU
+		{A1A916D5-8146-4784-91B7-1FC7D728A37E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A1A916D5-8146-4784-91B7-1FC7D728A37E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A1A916D5-8146-4784-91B7-1FC7D728A37E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A1A916D5-8146-4784-91B7-1FC7D728A37E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
