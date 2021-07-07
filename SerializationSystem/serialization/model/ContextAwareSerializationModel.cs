@@ -12,9 +12,14 @@ namespace SerializationSystem.Internal {
 
         internal ContextAwareSerializationModel(Type type, object obj, SerializeMode serializeMode) {
             if (type.IsInterface) {
-                Log.Warn($"Trying to build serialization model for interface type {type.FullName}", messageTitle: "SERIALIZE-WARN");
-                return;
+                if (obj == null) {
+                    Log.Warn($"Trying to build serialization model for interface type {type.FullName}", messageTitle: "SERIALIZE-WARN");
+                    return;
+                }
+
+                type = obj.GetType();
             }
+
             var ctor = type.Ctor();
             var parameters = SerializeUtils.CtorParameters(ctor);
             Constructor = new SerializationConstructor(ctor.Constructor, parameters);
