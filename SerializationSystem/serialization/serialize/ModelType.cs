@@ -1,5 +1,5 @@
 namespace SerializationSystem {
-    public enum SerializeType {
+    public enum ModelType {
         /// <summary>
         /// Can accurately cache the SerializationModel behind object types,
         /// but packet sizes are bigger because the object type is written before each object value.
