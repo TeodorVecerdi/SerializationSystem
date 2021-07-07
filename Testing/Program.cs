@@ -1,16 +1,20 @@
 ﻿using SerializationSystem;
+using SerializationSystem.Internal;
 using SerializationSystem.Logging;
 
 namespace Testing {
     internal static class Program {
         public static void Main() {
-            // LogOptions.LogSerialization = false;
+            LogOptions.LogSerialization = false;
             LogOptions.LogSerializationRead = false;
-            // LogOptions.LogSerializationWrite = false;
+            LogOptions.LogSerializationWrite = false;
             LogOptions.LogSerializationReplacements = false;
             Serializer.ExceptionHandler = new TestHandler();
             
-            var test1 = new Parent(new Impl("Michael", 14));
+            InternalTesting.Run();
+            
+
+            /*var test1 = new Parent(new Impl("Michael", 14));
             var test2 = new Parent(new Impl2("John", "Cool St. 69", "+69 420 69 420", new Impl2.Vector2{X=14.5f, Y=-4.5f}));
             
             Log.Message("BEFORE:");
@@ -24,7 +28,7 @@ namespace Testing {
             
             Log.Message("AFTER:");
             Log.Message(test1d);
-            Log.Message(test2d);
+            Log.Message(test2d);*/
         }
     }
 }

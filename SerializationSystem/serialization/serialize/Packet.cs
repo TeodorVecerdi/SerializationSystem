@@ -34,18 +34,18 @@ namespace SerializationSystem.Internal {
             reader = new BinaryReader(new MemoryStream(pSource));
         }
 
-        internal void Write(Type type, object obj, SerializeMode serializeMode) {
+        internal void Write(Type type, object obj, SerializeMode serializeMode, SerializeType serializeType) {
             var size = GetSize(type, obj);
             if (LogOptions.LOG_SERIALIZATION_WRITE)
                 Log.Info($"Writing type {SerializeUtils.FriendlyName(type)} [{(size == -1 || size == 0 ? "??" : size.ToString())} bytes]", null, "SERIALIZE-WRITE");
             
-            if (SerializeUtils.BuiltinTypes.Contains(type)) WriteBuiltin(type, obj);
-            else if (type.IsEnum) WriteEnum(type, obj);
-            else if (type == typeof(Type)) WriteTypeId(((Type) obj).ID());
-            else WriteNullable(type, obj, serializeMode);
+            if (SerializeUtils.BuiltinTypes.Contains(type)) WriteBuiltin(type, obj, serializeType);
+            else if (type.IsEnum) WriteEnum(type, obj, serializeType);
+            else if (type == typeof(Type)) WriteTypeId(((Type) obj).ID(), serializeType);
+            else WriteNullable(type, obj, serializeMode, serializeType);
         }
 
-        private void WriteBuiltin(Type type, object obj) {
+        private void WriteBuiltin(Type type, object obj, SerializeType serializeType) {
             if (type == typeof(bool)) writer.Write((bool) obj);
             else if (type == typeof(byte)) writer.Write((byte) obj);
             else if (type == typeof(sbyte)) writer.Write((sbyte) obj);
@@ -59,10 +59,10 @@ namespace SerializationSystem.Internal {
             else if (type == typeof(ulong)) writer.Write((ulong) obj);
             else if (type == typeof(short)) writer.Write((short) obj);
             else if (type == typeof(ushort)) writer.Write((ushort) obj);
-            else if (type == typeof(string)) WriteNullable(type, obj, SerializeMode.Default);
+            else if (type == typeof(string)) WriteNullable(type, obj, SerializeMode.Default, serializeType);
         }
 
-        private void WriteNullable(Type type, object obj, SerializeMode serializeMode) {
+        private void WriteNullable(Type type, object obj, SerializeMode serializeMode, SerializeType serializeType) {
             var canBeNull = !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
             var isNull = canBeNull && obj == null;
 
@@ -73,15 +73,15 @@ namespace SerializationSystem.Internal {
 
             if (canBeNull) writer.Write(true);
             if (type == typeof(string)) writer.Write((string) obj);
-            else if (SerializeUtils.CanSerializeList(type)) WriteList(type, obj, serializeMode);
-            else if (SerializeUtils.CanSerializeDictionary(type)) WriteDictionary(type, obj, serializeMode);
-            else Serializer.Serialize(obj, type, this, serializeMode);
+            else if (SerializeUtils.CanSerializeList(type)) WriteList(type, obj, serializeMode, serializeType);
+            else if (SerializeUtils.CanSerializeDictionary(type)) WriteDictionary(type, obj, serializeMode, serializeType);
+            else Serializer.Serialize(obj, type, this, serializeMode, serializeType);
         }
 
-        internal void Write<T>(T obj, SerializeMode serializeMode) {
+        internal void Write<T>(T obj, SerializeMode serializeMode, SerializeType serializeType) {
             var type = typeof(object);
             if (obj != null) type = obj.GetType();
-            Write(type, obj, serializeMode);
+            Write(type, obj, serializeMode, serializeType);
         }
 
         internal object Read(Type type, SerializeMode serializeMode) {
@@ -129,12 +129,12 @@ namespace SerializationSystem.Internal {
             return (T) Read(typeof(T), serializeMode);
         }
 
-        private void WriteList(Type type, object obj, SerializeMode serializeMode) {
+        private void WriteList(Type type, object obj, SerializeMode serializeMode, SerializeType serializeType) {
             var list = (IList) obj;
             var elemType = SerializeUtils.GetListElementType(type);
-            Write(list.Count, SerializeMode.Default);
+            Write(list.Count, SerializeMode.Default, serializeType);
             foreach (var elem in list) {
-                Write(elemType, elem, serializeMode);
+                Write(elemType, elem, serializeMode, serializeType);
             }
         }
 
@@ -156,7 +156,7 @@ namespace SerializationSystem.Internal {
             return list;
         }
 
-        private void WriteDictionary(Type type, object obj, SerializeMode serializeMode) {
+        private void WriteDictionary(Type type, object obj, SerializeMode serializeMode, SerializeType serializeType) {
             var keyType = type.GetGenericArguments()[0];
             var valueType = type.GetGenericArguments()[1];
             var dict = (IDictionary) obj;
@@ -174,8 +174,8 @@ namespace SerializationSystem.Internal {
                 valueList.Add(value);
             }
 
-            WriteList(typeof(List<>).MakeGenericType(keyType), keyList, serializeMode);
-            WriteList(typeof(List<>).MakeGenericType(valueType), valueList, serializeMode);
+            WriteList(typeof(List<>).MakeGenericType(keyType), keyList, serializeMode, serializeType);
+            WriteList(typeof(List<>).MakeGenericType(valueType), valueList, serializeMode, serializeType);
         }
 
         private object ReadDictionary(Type type, SerializeMode serializeMode) {
@@ -197,10 +197,10 @@ namespace SerializationSystem.Internal {
             return dict;
         }
 
-        private void WriteEnum(Type type, object obj) {
+        private void WriteEnum(Type type, object obj, SerializeType serializeType) {
             var underlyingType = type.GetEnumUnderlyingType();
             var underlyingValue = Convert.ChangeType(obj, underlyingType);
-            Write(underlyingType, underlyingValue, SerializeMode.Default);
+            Write(underlyingType, underlyingValue, SerializeMode.Default, serializeType);
         }
 
         private object ReadEnum(Type type) {
@@ -209,22 +209,22 @@ namespace SerializationSystem.Internal {
             return Enum.ToObject(type, underlyingValue);
         }
 
-        internal void WriteTypeId(TypeId typeId) {
+        internal void WriteTypeId(TypeId typeId, SerializeType serializeType) {
             var type = typeId.Type;
             if (!type.IsGenericType) {
                 if (LogOptions.LOG_SERIALIZATION_WRITE)
                     Log.Info($"Writing TypeId of {SerializeUtils.FriendlyName(typeId.Type)} [{sizeof(char) * typeId.ID.Length} bytes]", null, "SERIALIZE-WRITE");
-                Write(typeId.ID, SerializeMode.Default);
+                Write(typeId.ID, SerializeMode.Default, serializeType);
                 return;
             }
 
             var typeDef = TypeIdUtils.Get(type.GetGenericTypeDefinition());
             if (LogOptions.LOG_SERIALIZATION_WRITE)
                 Log.Info($"Writing TypeId of {SerializeUtils.FriendlyName(typeDef.Type)} [{sizeof(char) * typeDef.ID.Length} bytes]", null, "SERIALIZE-WRITE");
-            Write(typeDef.ID, SerializeMode.Default);
+            Write(typeDef.ID, SerializeMode.Default, serializeType);
             var genericArguments = type.GetGenericArguments();
             foreach (var arg in genericArguments) {
-                WriteTypeId(TypeIdUtils.Get(arg));
+                WriteTypeId(TypeIdUtils.Get(arg), serializeType);
             }
         }
 
