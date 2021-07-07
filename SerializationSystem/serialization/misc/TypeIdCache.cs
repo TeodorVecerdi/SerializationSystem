@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace SerializationSystem.Internal {
     internal class TypeIdCache {
-        private readonly Dictionary<int, TypeId> cache = new Dictionary<int, TypeId>();
+        private readonly ConcurrentDictionary<int, TypeId> cache = new();
 
         internal TypeId GetCached(Type type) {
             if (!Contains(type, out var hash, out var typeId)) cache[hash] = typeId;

@@ -152,12 +152,18 @@ namespace SerializationSystem.Internal {
         internal static string BuiltinFriendlyName(Type type) {
             if (type == typeof(bool)) return "bool";
             if (type == typeof(byte)) return "byte";
-            if (type == typeof(string)) return "string";
-            if (type == typeof(float)) return "float";
+            if (type == typeof(sbyte)) return "sbyte";
+            if (type == typeof(char)) return "char";
+            if (type == typeof(decimal)) return "decimal";
             if (type == typeof(double)) return "double";
+            if (type == typeof(float)) return "float";
             if (type == typeof(int)) return "int";
             if (type == typeof(uint)) return "uint";
             if (type == typeof(long)) return "long";
+            if (type == typeof(ulong)) return "ulong";
+            if (type == typeof(short)) return "short";
+            if (type == typeof(ushort)) return "ushort";
+            if (type == typeof(string)) return "string";
             return type.Name;
         }
 
@@ -185,7 +191,7 @@ namespace SerializationSystem.Internal {
         internal static Type GetDictionaryKeyType(Type type) => type.GenericTypeArguments[0];
         internal static Type GetDictionaryValueType(Type type) => type.GenericTypeArguments[1];
 
-        internal static readonly HashSet<Type> BuiltinTypes = new HashSet<Type> {
+        internal static readonly HashSet<Type> BuiltinTypes = new() {
             typeof(bool), typeof(byte), typeof(sbyte), typeof(char),
             typeof(decimal), typeof(double), typeof(float), typeof(int),
             typeof(uint), typeof(long), typeof(ulong), typeof(short),
