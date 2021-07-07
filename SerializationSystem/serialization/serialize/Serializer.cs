@@ -6,9 +6,7 @@ using SerializationSystem.Logging;
 
 namespace SerializationSystem {
     public static class Serializer {
-        private static readonly ConcurrentDictionary<SerializationModelKey, SerializationModel> serializationModel =
-            new ConcurrentDictionary<SerializationModelKey, SerializationModel>(SerializationModelKey.EqualityComparer);
-
+        private static readonly ConcurrentDictionary<SerializationModelKey, SerializationModel> serializationModel = new(SerializationModelKey.EqualityComparer);
         private static readonly SerializationExceptionHandler defaultExceptionHandler = new DefaultExceptionHandler();
         private static SerializationExceptionHandler exceptionHandler = defaultExceptionHandler;
 
@@ -62,8 +60,8 @@ namespace SerializationSystem {
                     return exceptionHandler.HandleSerializationException(exception);
                 }
 
-                BeforeSerializeCallback(obj, type);
                 if (!HasSerializationModel(type, serializeMode)) BuildSerializationModel(type, serializeMode);
+                BeforeSerializeCallback(obj, type);
                 if (LogOptions.LOG_SERIALIZATION) Log.Info($"Serializing type {SerializeUtils.FriendlyName(type)}", null, "SERIALIZE");
                 var bytes2 = SerializeImpl(obj, type, packet, serializeMode).GetBytes();
                 if (LogOptions.LOG_SERIALIZATION) Log.Info($"Serialized type {SerializeUtils.FriendlyName(type)} [{bytes2.Length} bytes]", null, "SERIALIZE");
